@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <style>
+            *{ box-sizing: border-box;}
+            body { margin: 0 }
+            #puzzle { width: 800px; height: 600px; box-shadow: 0 0 10px #666; position: relative }
+            #puzzle > div { position: absolute; width: 100px; height: 100px; box-shadow: 0 0 5px #333; }
+            button{float: left; height: 60px;width: 100px; margin: 40px 60px;font:1.5em Arial;}
+        </style>
+    </head>
+    <body>
+        <div id="puzzle"></div>
+        <button id="start">Start</button>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+        <script>
+            $(()=>{
+                const puzzle = $("#puzzle")
+                const button=$("#start")
+                let counter=0;
+                const elementsid=[];
+                const row=6
+                const col=8;
+
+                let x=0;
+                for(let row = 0; row < 6; row++) {
+                    for(let col = 0; col < 8; col++) {
+                        puzzle.append('<div></div>')
+                        puzzle.children().last().css({
+                            top: rand(0, 600) + 'px',
+                            left: rand(800, $(window).width() - 170 ) + 'px',
+                            transform: `rotate(${rand(-45, 45)}deg)`,
+                            background: `url('../img/cartoon.webp') ${-100 * col}px ${-100 * row}px`,
+
+                        })
+                        puzzle.children().last().attr('id', `${col+x}`);
+                    }
+                    x+=8
+                }
+                
+
+                button.click(function(){
+                    for(let i = 0; i <(row*col)-1; i++) {
+                        if(i==puzzle.find(`#${i}`).attr('id')){
+                            puzzle.find(`#${i}`).css({
+                            top:parseInt(i/8)*100+'px',
+                            left:(i%8)*100 + 'px',
+                            background: `url('../img/cartoon.webp') ${-100 * (i%8)}px ${-100 * parseInt(i/8)}px`,
+                            transform: `rotate(${0}deg)`,
+                            boxShadow: 'none'
+                        })
+                         check(puzzle.find(`#${i}`))
+                         console.log(counter)
+                        }
+                    }
+
+                })
+                 
+                puzzle.children().draggable({
+                    snap: puzzle.children(),
+                    start: function() {
+                        $(this).css({ transform: 'rotate(0deg)', zIndex: 99 })
+                    },
+                    drag: function() {
+                    },
+                    stop: function() {
+                        $(this).css({ 
+                            left : `${100 * Math.round( $(this).position().left / 100)}px`,
+                            top : `${100 * Math.round( $(this).position().top / 100)}px`,
+                            boxShadow: 'none'
+                        })
+                        check($(this))
+                        console.log(counter)
+                        if(counter==row*col) Gameover()
+                    }
+                })
+
+                function check(temp){
+                    let id=temp.attr('id')
+                    
+                    let top;
+                    let left;
+                    for(let i = 0; i <row*col; i++) {
+                        if(id==puzzle.find(`#${i}`).attr('id')){
+                             top=parseInt(i/8)*100
+                             left=(i%8)*100 
+
+                             if(temp.css("left")==left+'px' && temp.css("top")==top+'px'&& elementsid.indexOf(id)==-1){
+                                counter++;
+                                elementsid.push(id);
+                             } 
+                             console.log(elementsid)
+                        }
+                    }
+                    
+                }
+
+                function Gameover(){
+                    puzzle.empty()
+                    puzzle.css({
+                        background:'black',
+                        display: 'flex',
+                        justifyContent:'center',
+                        alignItems:'center'
+                    })
+                    puzzle.append('<p>Game Over!</p>')
+                    puzzle.children().css({
+                        color:'white',
+                        textAlign:'center',
+                        font:'bold 3em Arial'
+                        
+                    })
+                }
+
+                function rand(min, max) {
+                    return Math.floor(Math.random() * (max - min + 1) ) + min;
+                }
+            })
+        </script>
+    </body>
+</html>
