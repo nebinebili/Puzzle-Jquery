@@ -34,7 +34,7 @@
                             top: rand(0, 600) + 'px',
                             left: rand(800, $(window).width() - 170 ) + 'px',
                             transform: `rotate(${rand(-45, 45)}deg)`,
-                            background: `url('../img/cartoon.webp') ${-100 * col}px ${-100 * row}px`,
+                            background: `url('img/cartoon.webp') ${-100 * col}px ${-100 * row}px`,
 
                         })
                         puzzle.children().last().attr('id', `${col+x}`);
@@ -49,7 +49,7 @@
                             puzzle.find(`#${i}`).css({
                             top:parseInt(i/8)*100+'px',
                             left:(i%8)*100 + 'px',
-                            background: `url('../img/cartoon.webp') ${-100 * (i%8)}px ${-100 * parseInt(i/8)}px`,
+                            background: `url('img/cartoon.webp') ${-100 * (i%8)}px ${-100 * parseInt(i/8)}px`,
                             transform: `rotate(${0}deg)`,
                             boxShadow: 'none'
                         })
